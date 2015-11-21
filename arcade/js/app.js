@@ -4,9 +4,7 @@
 var BLOCK_SIZE_X = 101,
     BLOCK_SIZE_Y = 83,
     totalScore = 0,
-    totalGem = 0,
     collisionCount = 0;
-    characterSelect = 0;
 
 // Variable for setting the starting point of the player.
 var playerStartX = 2 * BLOCK_SIZE_X,
@@ -79,8 +77,8 @@ Player.prototype.handleInput = function(dir){
         this.y-=83;
         if(this.y < BLOCK_SIZE_Y-30) {
             this.update();
-        };
-    };
+        }
+    }
     if(dir==='down' && this.y < 392) this.y+=83;
 
     if(checkCollion(this,player)) {
@@ -98,7 +96,7 @@ Player.prototype.update = function() {
         console.log("update function called");
         totalScore += 1;
         console.log(totalScore);
-    };
+    }
 
 };
 // this function resets the players position to the starting position
@@ -108,7 +106,7 @@ Player.prototype.reset = function() {
     this.y = 392;
     collisionCount += 1;
     console.log("COLLISION DETECTED Game Reset");
-}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
