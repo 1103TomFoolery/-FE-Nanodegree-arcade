@@ -1,6 +1,4 @@
 // Generate variables
-
-
 var BLOCK_SIZE_X = 101,
     BLOCK_SIZE_Y = 83,
     totalScore = 0,
@@ -10,27 +8,34 @@ var BLOCK_SIZE_X = 101,
 var playerStartX = 2 * BLOCK_SIZE_X,
     playerStartY = 5 * BLOCK_SIZE_Y - 20;
 
+// base class for players and enemies
+var Thing = function(x, y) {
+    this.x = x;
+    this.y = y;
+};
+
 // Check for collisions
 function checkCollision(object, player) {
-  return (player.x > object.x - object.hitBox.x/2 &&
-          player.x < object.x + object.hitBox.x/2 &&
-          player.y > object.y - object.hitBox.y/2 &&
-          player.y < object.y + object.hitBox.y/2);
+    return (player.x > object.x - object.hitBox.x / 2 &&
+        player.x < object.x + object.hitBox.x / 2 &&
+        player.y > object.y - object.hitBox.y / 2 &&
+        player.y < object.y + object.hitBox.y / 2);
 }
 
-// Enemies our player must avoid
 var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.x = x;
-    this.y = y;
+    Thing.call(this, x, y);
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
 };
-Enemy.prototype.hitBox = {'x': 101, 'y': 83};
+Enemy.prototype.hitBox = {
+    'x': 101,
+    'y': 83
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -38,9 +43,9 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    s = (Math.random()*50*dt);
+    s = (Math.random() * 50 * dt);
     this.x += s;
-    if(this.x>500) this.x = 0;
+    if (this.x > 500) this.x = 0;
 
     if (checkCollision(this, player)) {
         console.log("collision detected");
@@ -57,40 +62,36 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(x,y) {
-    this.x = x;
-    this.y = y;
+var Player = function(x, y) {
+   Thing.call(this, x, y);
     this.sprite = 'images/char-boy.png';
 };
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-Player.prototype.handleInput = function(dir){
-    //    canvas.width = 505;
-    //    canvas.height = 606;
+Player.prototype.handleInput = function(dir) {
 
-
-    if(dir==='left' && this.x > 0) this.x-=100;
-    if(dir==='right' && this.x < 400) this.x+=100;
-    if(dir==='up') {
-        this.y-=83;
-        if(this.y < BLOCK_SIZE_Y-30) {
+    if (dir === 'left' && this.x > 0) this.x -= 100;
+    if (dir === 'right' && this.x < 400) this.x += 100;
+    if (dir === 'up') {
+        this.y -= 83;
+        if (this.y < BLOCK_SIZE_Y - 30) {
             this.update();
         }
     }
-    if(dir==='down' && this.y < 392) this.y+=83;
+    if (dir === 'down' && this.y < 392) this.y += 83;
 
-    if(checkCollion(this,player)) {
+    if (checkCollion(this, player)) {
         console.log("Collision Detected");
-        player.reset();
+        this.reset();
     }
- 
+
 };
 
 // this function updates the player's position
 Player.prototype.update = function() {
-    if (this.y < BLOCK_SIZE_Y-30) {
+    if (this.y < BLOCK_SIZE_Y - 30) {
         this.x = playerStartX;
         this.y = playerStartY;
         console.log("update function called");
@@ -112,10 +113,10 @@ Player.prototype.reset = function() {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
-for(var i=0; i<3; i++){
-    y = 220 - (80*i);
-    x = 400/(1+i);
-    allEnemies.push(new Enemy(x,y));
+for (var i = 0; i < 3; i++) {
+    y = 220 - (80 * i);
+    x = 400 / (1 + i);
+    allEnemies.push(new Enemy(x, y));
 }
 
 var player = new Player(200, 392);
