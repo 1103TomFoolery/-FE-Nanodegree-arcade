@@ -13,14 +13,17 @@ var Thing = function(x, y) {
     this.x = x;
     this.y = y;
 };
+// Thing.prototype.render = function() {
+//     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+// }
 
 // Check for collisions
-function checkCollision(object, player) {
-    return (player.x > object.x - object.hitBox.x / 2 &&
-        player.x < object.x + object.hitBox.x / 2 &&
-        player.y > object.y - object.hitBox.y / 2 &&
-        player.y < object.y + object.hitBox.y / 2);
-}
+// function checkCollision(object, player) {
+//     return (player.x > object.x - object.hitBox.x / 2 &&
+//         player.x < object.x + object.hitBox.x / 2 &&
+//         player.y > object.y - object.hitBox.y / 2 &&
+//         player.y < object.y + object.hitBox.y / 2);
+// }
 
 var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
@@ -28,7 +31,6 @@ var Enemy = function(x, y, speed) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    Thing.call(this, x, y);
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
 };
@@ -46,24 +48,27 @@ Enemy.prototype.update = function(dt) {
     s = (Math.random() * 50 * dt);
     this.x += s;
     if (this.x > 500) this.x = 0;
+    Thing.call(this, x, y);
 
-    if (checkCollision(this, player)) {
-        console.log("collision detected");
-        collisionCount += 1;
-        player.reset();
-    }
+    // if (checkCollision(this, player)) {
+    //     console.log("collision detected");
+    //     collisionCount += 1;
+    //     player.reset();
+    // }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+Enemy.prototype = Object.create(Thing.prototype);
+Enemy.prototype.constructor = Enemy;
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(x, y) {
-   Thing.call(this, x, y);
+    Thing.call(this, x, y);
     this.sprite = 'images/char-boy.png';
 };
 
@@ -72,7 +77,7 @@ Player.prototype.render = function() {
 };
 Player.prototype.handleInput = function(dir) {
 
-    if (dir === 'left' && this.x > 0) this.x -= 100;
+    if (dir === 'left' && this.x > 100) this.x -= 100;
     if (dir === 'right' && this.x < 400) this.x += 100;
     if (dir === 'up') {
         this.y -= 83;
@@ -81,11 +86,6 @@ Player.prototype.handleInput = function(dir) {
         }
     }
     if (dir === 'down' && this.y < 392) this.y += 83;
-
-    if (checkCollion(this, player)) {
-        console.log("Collision Detected");
-        this.reset();
-    }
 
 };
 
