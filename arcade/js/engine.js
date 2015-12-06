@@ -70,12 +70,11 @@ var Engine = (function(global) {
     }
 
     function checkCollision(object, player) {
-    return (player.x > object.x - object.hitBox.x / 2 &&
+        return (player.x > object.x - object.hitBox.x / 2 &&
             player.x < object.x + object.hitBox.x / 2 &&
             player.y > object.y - object.hitBox.y / 2 &&
             player.y < object.y + object.hitBox.y / 2);
     }
-
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how

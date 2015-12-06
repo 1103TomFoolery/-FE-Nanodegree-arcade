@@ -5,7 +5,7 @@ var BLOCK_SIZE_X = 101,
     collisionCount = 0;
 
 // Variable for setting the starting point of the player.
-var playerStartX = 2 * BLOCK_SIZE_X,
+var playerStartX = 2* BLOCK_SIZE_X,
     playerStartY = 5 * BLOCK_SIZE_Y - 20;
 
 // base class for players and enemies
@@ -13,30 +13,30 @@ var Thing = function(x, y) {
     this.x = x;
     this.y = y;
 };
-// Thing.prototype.render = function() {
-//     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-// }
+Thing.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
 
-// Check for collisions
-// function checkCollision(object, player) {
-//     return (player.x > object.x - object.hitBox.x / 2 &&
-//         player.x < object.x + object.hitBox.x / 2 &&
-//         player.y > object.y - object.hitBox.y / 2 &&
-//         player.y < object.y + object.hitBox.y / 2);
-// }
-
+//var Enemy = function(x, y, speed) {
 var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+
+//    Thing.call(this,x,y);
+    this.x = x;
+    this.y = y;
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
 };
+
+Enemy.prototype = Object.create(Thing.prototype);
+
 Enemy.prototype.hitBox = {
-    'x': 101,
-    'y': 83
+    'x': BLOCK_SIZE_X,
+    'y': BLOCK_SIZE_Y
 };
 
 // Update the enemy's position, required method for game
@@ -48,20 +48,14 @@ Enemy.prototype.update = function(dt) {
     s = (Math.random() * 50 * dt);
     this.x += s;
     if (this.x > 500) this.x = 0;
-    Thing.call(this, x, y);
+//    Thing.call(this,x, y);
 
-    // if (checkCollision(this, player)) {
-    //     console.log("collision detected");
-    //     collisionCount += 1;
-    //     player.reset();
-    // }
 };
 
 // Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-Enemy.prototype = Object.create(Thing.prototype);
+// Enemy.prototype.render = function() {
+//     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+// };
 Enemy.prototype.constructor = Enemy;
 
 // Now write your own player class
@@ -71,14 +65,17 @@ var Player = function(x, y) {
     Thing.call(this, x, y);
     this.sprite = 'images/char-boy.png';
 };
+Player.prototype = Object.create(Thing.prototype);
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 Player.prototype.handleInput = function(dir) {
 
-    if (dir === 'left' && this.x > 100) this.x -= 100;
-    if (dir === 'right' && this.x < 400) this.x += 100;
+    console.log(this.x);
+
+    if (dir === 'left' && this.x >= BLOCK_SIZE_X) this.x -= BLOCK_SIZE_X;
+    if (dir === 'right' && this.x < 400) this.x += BLOCK_SIZE_X;
     if (dir === 'up') {
         this.y -= 83;
         if (this.y < BLOCK_SIZE_Y - 30) {
@@ -103,8 +100,8 @@ Player.prototype.update = function() {
 // this function resets the players position to the starting position
 Player.prototype.reset = function() {
     totalScore = 0;
-    this.x = 200;
-    this.y = 392;
+    this.x = playerStartX;
+    this.y = playerStartY;
     collisionCount += 1;
     console.log("COLLISION DETECTED Game Reset");
 };
@@ -119,7 +116,7 @@ for (var i = 0; i < 3; i++) {
     allEnemies.push(new Enemy(x, y));
 }
 
-var player = new Player(200, 392);
+var player = new Player(playerStartX, playerStartY);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
